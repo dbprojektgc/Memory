@@ -35,15 +35,15 @@
 
   #memory-board { 
     display: grid; 
-    grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); 
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); 
     grid-gap: 8px; 
-    justify-items: center;
-    margin-top: 20px;
-    max-width: 95%;
+    max-width: 480px; /* Boardbreite begrenzen */
+    margin: 20px auto; /* horizontal zentrieren */
+    justify-items: center; 
   }
 
   .card {
-    width: 100%; 
+    width: 80px; 
     aspect-ratio: 1; 
     border-radius: 8px;
     border: 2px solid #333;
@@ -133,12 +133,14 @@
     #memory-board {
       grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
       grid-gap: 6px;
+      max-width: 95%;
     }
 
     #score { font-size: 18px; }
     #digits { font-size: 28px; }
     #congrats { font-size: 22px; padding: 20px; }
     h1 { font-size: 24px; }
+    .card { width: 60px; }
     .card .back img { width: 75%; height: 75%; }
   }
 </style>
