@@ -35,14 +35,16 @@
 
   #memory-board { 
     display: grid; 
-    grid-template-columns: repeat(6, 80px); /* 6 Karten pro Reihe */
+    grid-template-columns: repeat(6, 1fr); /* 6 Karten pro Reihe */
     grid-gap: 10px; 
     justify-content: center; /* horizontal zentrieren */
+    width: 100%;
+    max-width: 600px; /* 6 Karten à 100px */
     margin: 20px 0;
   }
 
   .card {
-    width: 80px; 
+    width: 100%; /* passt sich Grid-Spalte an */
     aspect-ratio: 1; 
     border-radius: 8px;
     border: 2px solid #333;
@@ -130,15 +132,15 @@
   /* Media Queries für kleine Smartphones */
   @media (max-width: 400px) {
     #memory-board {
-      grid-template-columns: repeat(3, 60px); /* 3 Karten pro Reihe auf kleinen Geräten */
+      grid-template-columns: repeat(3, 1fr); /* 3 Karten pro Reihe auf Handy */
       grid-gap: 6px;
+      max-width: 300px; /* 3 Karten à 100px */
     }
 
     #score { font-size: 18px; }
     #digits { font-size: 28px; }
     #congrats { font-size: 22px; padding: 20px; }
     h1 { font-size: 24px; }
-    .card { width: 60px; }
     .card .back img { width: 75%; height: 75%; }
   }
 </style>
