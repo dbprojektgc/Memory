@@ -6,36 +6,45 @@
 <style>
   body { 
     font-family: Arial, sans-serif; 
-    text-align: center; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    margin: 0;
+    padding: 10px 0;
+    text-align: center;
     background: url('https://media.istockphoto.com/id/155099930/de/foto/tropische-blattfiedern-garten.jpg?s=612x612&w=0&k=20&c=RsmWfxiwwWrhRkPjzO9dRfpHRnKgQBm7ypWvpn6O-GQ=') no-repeat center center fixed;
     background-size: cover;
     color: white;
-    margin: 0;
-    padding: 0;
-    perspective: 1000px; /* für 3D Flip */
+    perspective: 1000px;
   }
+
   h1 { 
     margin-top: 20px; 
     text-shadow: 2px 2px 4px #000; 
-    font-size: 6vw; /* responsiv */
+    font-size: 6vw;
   }
+
   #score { 
     font-size: 5vw; 
     margin-top: 10px; 
     font-weight: bold; 
     text-shadow: 1px 1px 3px #000; 
   }
+
   #memory-board { 
     display: grid; 
-    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); 
-    grid-gap: 10px; 
-    justify-content: center; 
-    margin: 20px auto;
-    max-width: 95%; 
+    grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); 
+    grid-gap: 8px; 
+    justify-items: center;
+    margin-top: 20px;
+    max-width: 95%;
   }
+
   .card {
     width: 100%; 
-    aspect-ratio: 1; /* quadratische Karten */
+    aspect-ratio: 1; 
     border-radius: 8px;
     border: 2px solid #333;
     cursor: pointer;
@@ -44,13 +53,16 @@
     transition: transform 0.6s;
     box-shadow: 0 4px 8px rgba(0,0,0,0.3);
   }
+
   .card:hover {
     transform: scale(1.05) rotateY(0deg);
     box-shadow: 0 0 15px #FFD700;
   }
+
   .card.flipped {
     transform: rotateY(180deg);
   }
+
   .card .front, .card .back {
     position: absolute;
     width: 100%;
@@ -61,18 +73,22 @@
     align-items: center;
     justify-content: center;
   }
+
   .card .front {
     background: url('https://st3.depositphotos.com/14386438/17781/i/1600/depositphotos_177810808-stock-photo-green-tropical-leaves-isolated-white.jpg') center center / cover no-repeat;
-    opacity: 0.7; /* lässt den Hintergrund durchscheinen */
+    opacity: 0.7;
   }
+
   .card .back img {
-    width: 80%; /* passt sich an Kartengröße an */
+    width: 80%;
     height: 80%;
     border-radius: 8px;
   }
+
   .card .back {
     transform: rotateY(180deg);
   }
+
   #digits {
     margin-top: 20px;
     font-size: 8vw;
@@ -80,12 +96,14 @@
     color: #FFD700;
     text-shadow: 2px 2px 4px #000;
     height: 50px;
-    transition: transform 0.3s, opacity 1s;
+    transition: transform 0.3s, opacity 0.5s;
     opacity: 0;
   }
+
   #digits.show {
     opacity: 1;
   }
+
   #congrats {
     display:none;
     position:fixed;
@@ -101,36 +119,27 @@
     text-align: center;
     line-height: 1.5;
     z-index:1000;
+    opacity: 0;
+    transition: opacity 0.8s ease-in-out;
+  }
+
+  #congrats.show {
+    display:block;
+    opacity: 1;
   }
 
   /* Media Queries für kleine Smartphones */
   @media (max-width: 400px) {
     #memory-board {
       grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-      grid-gap: 8px;
+      grid-gap: 6px;
     }
 
-    #score {
-      font-size: 18px;
-    }
-
-    #digits {
-      font-size: 28px;
-    }
-
-    #congrats {
-      font-size: 22px;
-      padding: 20px;
-    }
-
-    h1 {
-      font-size: 24px;
-    }
-
-    .card .back img {
-      width: 75%;
-      height: 75%;
-    }
+    #score { font-size: 18px; }
+    #digits { font-size: 28px; }
+    #congrats { font-size: 22px; padding: 20px; }
+    h1 { font-size: 24px; }
+    .card .back img { width: 75%; height: 75%; }
   }
 </style>
 </head>
@@ -219,7 +228,8 @@ function checkMatch() {
     showDigit();
     resetCards(true);
     if(score === cards.length / 2){
-      document.getElementById('congrats').style.display = 'block';
+      const overlay = document.getElementById('congrats');
+      overlay.classList.add('show');
     }
   } else {
     lockBoard = true;
