@@ -4,15 +4,17 @@
 <meta charset="UTF-8">
 <title>Tropische Früchte Memory</title>
 <style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
   body { 
-    font-family: Arial, sans-serif; 
+    font-family: Arial, sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center; /* vertikal zentrieren */
-    min-height: 100vh;
-    margin: 0;
-    padding: 10px 0;
+    justify-content: flex-start;
     text-align: center;
     background: url('https://media.istockphoto.com/id/155099930/de/foto/tropische-blattfiedern-garten.jpg?s=612x612&w=0&k=20&c=RsmWfxiwwWrhRkPjzO9dRfpHRnKgQBm7ypWvpn6O-GQ=') no-repeat center center fixed;
     background-size: cover;
@@ -20,32 +22,34 @@
     perspective: 1000px;
   }
 
-  h1 { 
-    margin-top: 20px; 
-    text-shadow: 2px 2px 4px #000; 
+  h1 {
+    margin: 10px 0;
     font-size: 6vw;
+    text-shadow: 2px 2px 4px #000;
   }
 
-  #score { 
-    font-size: 5vw; 
-    margin-top: 10px; 
-    font-weight: bold; 
-    text-shadow: 1px 1px 3px #000; 
+  #score {
+    font-size: 5vw;
+    margin: 10px 0;
+    font-weight: bold;
+    text-shadow: 1px 1px 3px #000;
   }
 
-  #memory-board { 
-    display: grid; 
-    grid-template-columns: repeat(6, 1fr); /* 6 Karten pro Reihe */
-    grid-gap: 10px; 
-    justify-content: center; /* horizontal zentrieren */
-    width: 100%;
-    max-width: 600px; /* 6 Karten à 100px */
-    margin: 20px 0;
+  #memory-board {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); /* 6 Spalten Desktop */
+    grid-template-rows: repeat(4, 1fr); /* 4 Reihen Desktop */
+    gap: 5px;
+    width: 100vw;
+    height: calc(100vh - 160px); /* zieht Header + Score ab */
+    padding: 10px;
+    box-sizing: border-box;
   }
 
   .card {
-    width: 100%; /* passt sich Grid-Spalte an */
-    aspect-ratio: 1; 
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1;
     border-radius: 8px;
     border: 2px solid #333;
     cursor: pointer;
@@ -91,7 +95,7 @@
   }
 
   #digits {
-    margin-top: 20px;
+    margin: 10px 0;
     font-size: 8vw;
     font-weight: bold;
     color: #FFD700;
@@ -129,20 +133,21 @@
     opacity: 1;
   }
 
-  /* Media Queries für kleine Smartphones */
-  @media (max-width: 400px) {
+  /* Media Queries für Smartphones */
+  @media (max-width: 600px) {
     #memory-board {
-      grid-template-columns: repeat(3, 1fr); /* 3 Karten pro Reihe auf Handy */
-      grid-gap: 6px;
-      max-width: 300px; /* 3 Karten à 100px */
+      grid-template-columns: repeat(3, 1fr); /* 3 Spalten */
+      grid-template-rows: repeat(8, 1fr); /* 8 Reihen */
+      height: calc(100vh - 160px);
+      gap: 4px;
+      padding: 5px;
     }
-
-    #score { font-size: 18px; }
-    #digits { font-size: 28px; }
-    #congrats { font-size: 22px; padding: 20px; }
-    h1 { font-size: 24px; }
-    .card .back img { width: 75%; height: 75%; }
+    h1 { font-size: 5vw; }
+    #score { font-size: 4vw; }
+    #digits { font-size: 10vw; }
+    #congrats { font-size: 8vw; padding: 10vw; }
   }
+
 </style>
 </head>
 <body>
