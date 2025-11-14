@@ -56,14 +56,19 @@
 
   .card {
     width: 100%;
-    padding-top: 100%;
+    padding-top: 100%; /* quadratisch */
     position: relative;
     border-radius: 8px;
     border: 2px solid #333;
     cursor: pointer;
     transform-style: preserve-3d;
-    transition: transform 0.6s;
+    transition: transform 0.6s, opacity 0.8s;
     box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    opacity: 0; /* Start unsichtbar */
+  }
+
+  .card.show {
+    opacity: 1; /* eingeblendet */
   }
 
   .card:hover {
@@ -136,7 +141,6 @@
     #digits { font-size: 10vw; }
     #congrats { font-size: 8vw; padding: 10vw; }
   }
-
 </style>
 </head>
 <body>
@@ -181,7 +185,7 @@ let firstCard = null;
 let secondCard = null;
 let lockBoard = false;
 
-cards.forEach((fruit) => {
+cards.forEach((fruit, index) => {
   const card = document.createElement('div');
   card.classList.add('card');
   card.dataset.name = fruit.name;
@@ -200,6 +204,11 @@ cards.forEach((fruit) => {
 
   card.addEventListener('click', () => flipCard(card));
   board.appendChild(card);
+
+  // Sanftes Einblenden
+  setTimeout(() => {
+    card.classList.add('show');
+  }, index * 100);
 });
 
 function flipCard(card) {
