@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Tropische Früchte Memory</title>
+<style>
+  body { 
+    font-family: Arial, sans-serif; 
+    text-align: center; 
+    background: url('https://media.istockphoto.com/id/1446305840/de/foto/tropischen-regenwald-von-costa-rica.jpg?s=612x612&w=0&k=20&c=mMisdnBG2mxljAjoT4cHPa3SEyjs9z2_xwtK6f06er4=') no-repeat center center fixed;
+    background-size: cover;
+    color: white;
+    margin: 0;
+    padding: 0;
+    perspective: 1000px; /* für 3D Flip */
+  }
+  h1 { 
+    margin-top: 20px; 
+    text-shadow: 2px 2px 4px #000; 
+  }
+  #score { 
+    font-size: 24px; 
+    margin-top: 10px; 
+    font-weight: bold; 
+    text-shadow: 1px 1px 3px #000; 
+  }
+  #memory-board { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); 
+    grid-gap: 10px; 
+    justify-content: center; 
+    margin: 30px auto;
+    max-width: 700px;
+  }
+  .card {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    border: 2px solid #333;
+    cursor: pointer;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  }
+  .card:hover {
+    transform: scale(1.05) rotateY(0deg);
+    box-shadow: 0 0 15px #FFD700;
+  }
+  .card.flipped {
+    transform: rotateY(180deg);
+  }
+  .card .front, .card .back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .card .front {
+    background: url('https://st3.depositphotos.com/14386438/17781/i/1600/depositphotos_177810808-stock-photo-green-tropical-leaves-isolated-white.jpg') center center / cover no-repeat;
+    opacity: 0.7; /* lässt den Hintergrund durchscheinen */
+  }
+  .card .back img {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+  }
+  .card .back {
+    transform: rotateY(180deg);
+  }
+  #digits {
+    margin-top: 20px;
+    font-size: 36px;
+    font-weight: bold;
+    color: #FFD700;
+    text-shadow: 2px 2px 4px #000;
+    height: 50px;
+    transition: transform 0.3s, opacity 1s;
+    opacity: 0;
+  }
+  #digits.show {
+    opacity: 1;
+  }
+  #congrats {
+    display:none;
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    background: rgba(0,0,0,0.8);
+    color: #FFD700;
+    padding: 30px;
+    border-radius: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.5;
+    z-index:1000;
+  }
+</style>
+</head>
+<body>
+
+<h1>Tropische Früchte Memory</h1>
+<div id="score">Punkte: 0</div>
+<div id="memory-board"></div>
+<div id="digits"></div>
+
+<div id="congrats">
+  Glückwunsch! Du hast alle Früchte gefunden!<br><br>
+  Hast Du dir auch die Koordinaten notiert?<br>
+  NEIN???<br>Dann musst du da jetzt nochmal durch ;)
+</div>
+
+<script>
+const fruits = [
+  {name: 'Mango', img: 'https://media.istockphoto.com/id/450724125/de/foto/mango.jpg?s=612x612&w=0&k=20&c=NBBWlv6s0Zd8DypjPCJ7Vr3INL5GQhpxu6AXl6ctULA='},
+  {name: 'Ananas', img: 'https://media.istockphoto.com/id/2153120798/de/foto/reifer-ananasquerschnitt-und-ananasscheiben-isoliert-auf-wei%C3%9Fem-hintergrund-datei-enth%C3%A4lt.jpg?s=612x612&w=0&k=20&c=bUVwM1m6KmijS-HjoA0h3OIYrpVSY9dhmtNJNBBFaVA='},
+  {name: 'Guave', img: 'https://media.istockphoto.com/id/1214712248/de/foto/isolierte-rosa-fleischgeschnittene-geschnittene-guave.jpg?s=612x612&w=0&k=20&c=uY2MtUnpb8wGWRlHODRUUTtABg36dokzVic9oL1oXZU='},
+  {name: 'Drachenfrucht', img: 'https://media.istockphoto.com/id/1344251913/de/foto/pitaya-oder-drachenfrucht.jpg?s=612x612&w=0&k=20&c=Yj1dSOz-D6H4Yf5x3qDgx-fDBhCUw0nnMGwV7aaD15k='},
+  {name: 'Kaki', img: 'https://media.istockphoto.com/id/526531101/de/foto/kaki.jpg?s=612x612&w=0&k=20&c=fGDii5ckNw-jSLLemYsppHPI7JPv6D46eHpC2lXMGfA='},
+  {name: 'Passionsfrucht', img: 'https://media.istockphoto.com/id/2221733795/de/foto/passion-maracuya-fruit-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=g-RDg4efRy6FEv7hZJz5YxsfbawsrrtT-jTw71Foapg='},
+  {name: 'Sternfrucht', img: 'https://media.istockphoto.com/id/1154569291/de/foto/carambola-isoliert-auf-wei%C3%9Fem-hintergrund-sternfruchten.jpg?s=612x612&w=0&k=20&c=ncebRhVFdJ-hniZPt_WkuwqzUcbonVBLOxKnhqKQ3Rs='},
+  {name: 'Kokosnuss', img: 'https://media.istockphoto.com/id/2032230628/de/foto/coconut-isolated-coconuts-with-leaves-on-white-background-coconut-coco-half-and-leaf-full.jpg?s=612x612&w=0&k=20&c=_VPFFoM6fsyg4_53Q_d9sgfRaHhA98CfKRa9Oef9jHE='},
+  {name: 'Papaya', img: 'https://media.istockphoto.com/id/2211945758/de/foto/isolierte-tropische-papayafrucht-ganz-und-halbiert.jpg?s=612x612&w=0&k=20&c=Cq1PEVTKqr-XBNVJLWWuRip0DMZ_FXfgUggwdS-mEm4='},
+  {name: 'Kiwi', img: 'https://media.istockphoto.com/id/2245334061/de/foto/reife-kiwis-halb-und-in-der-scheibe-isoliert-auf-wei%C3%9Fem-hintergrund.jpg?s=612x612&w=0&k=20&c=xZCRSR_-7Ind3IRLbsY3b72tDXEq71tZ2NX5Ve-b25M='},
+  {name: 'Feige', img: 'https://media.istockphoto.com/id/2244966404/de/foto/feige-und-schneide-sie-in-eine-isolierte-scheibe-zwei-feigen-und-ein-st%C3%BCck-feige-mit.jpg?s=612x612&w=0&k=20&c=CmdEZatn_nbSXotITtEKCRhfmW7dLl0Xal7fLs8Kp7E='},
+  {name: 'Granatapfel', img: 'https://media.istockphoto.com/id/2244966978/de/foto/granatapfelfr%C3%BCchte-und-ein-schnitt-in-einer-scheibe-isoliert.jpg?s=612x612&w=0&k=20&c=meAgFs3S6OLEVxVMq9aEL6gASEBsrzpWBBaE_jm4otQ='}
+];
+
+const digitsSequence = ['N','3','5','7','8','9','E','1','5','2','8','3'];
+let digitIndex = 0;
+let score = 0;
+
+// Kartenduplikate
+let cards = [];
+fruits.forEach(f => cards.push({...f}, {...f}));
+cards.sort(() => 0.5 - Math.random());
+
+const board = document.getElementById('memory-board');
+let firstCard = null;
+let secondCard = null;
+let lockBoard = false;
+
+cards.forEach((fruit) => {
+  const card = document.createElement('div');
+  card.classList.add('card');
+  card.dataset.name = fruit.name;
+
+  const front = document.createElement('div');
+  front.classList.add('front');
+
+  const back = document.createElement('div');
+  back.classList.add('back');
+  const img = document.createElement('img');
+  img.src = fruit.img;
+  back.appendChild(img);
+
+  card.appendChild(front);
+  card.appendChild(back);
+
+  card.addEventListener('click', () => flipCard(card));
+  board.appendChild(card);
+});
+
+function flipCard(card) {
+  if (lockBoard || card === firstCard || card.classList.contains('flipped')) return;
+  card.classList.add('flipped');
+
+  if (!firstCard) {
+    firstCard = card;
+    return;
+  }
+
+  secondCard = card;
+  checkMatch();
+}
+
+function checkMatch() {
+  const isMatch = firstCard.dataset.name === secondCard.dataset.name;
+  if (isMatch) {
+    score++;
+    document.getElementById('score').textContent = 'Punkte: ' + score;
+    showDigit();
+    resetCards(true);
+    if(score === cards.length / 2){
+      document.getElementById('congrats').style.display = 'block';
+    }
+  } else {
+    lockBoard = true;
+    setTimeout(() => {
+      firstCard.classList.remove('flipped');
+      secondCard.classList.remove('flipped');
+      resetCards(false);
+    }, 1000);
+  }
+}
+
+function resetCards(matched) {
+  [firstCard, secondCard] = [null, null];
+  lockBoard = false;
+}
+
+function showDigit() {
+  if (digitIndex < digitsSequence.length) {
+    const digitDiv = document.getElementById('digits');
+    const digit = digitsSequence[digitIndex];
+    digitIndex++;
+    digitDiv.textContent = digit;
+    digitDiv.classList.add('show');
+    digitDiv.style.transform = 'scale(1.5)';
+    
+    setTimeout(() => {
+      digitDiv.style.transform = 'scale(1)';
+      digitDiv.classList.remove('show');
+      digitDiv.textContent = '';
+    }, 1000);
+  }
+}
+</script>
+
+</body>
+</html>
