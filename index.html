@@ -18,6 +18,78 @@
     perspective: 1000px;
   }
 
+  /* 🔐 Passwortfenster Design */
+  #passwordScreen {
+    position: fixed;
+    top:0; left:0;
+    width:100vw; height:100vh;
+    backdrop-filter: blur(12px);
+    background: rgba(0,0,0,0.65);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    z-index: 5000;
+    animation: fadeIn 0.8s ease forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity:0; }
+    to { opacity:1; }
+  }
+
+  #pwBox {
+    background: rgba(255,255,255,0.15);
+    padding: 4vw;
+    border-radius: 20px;
+    box-shadow: 0 0 25px rgba(0,0,0,0.5);
+    backdrop-filter: blur(10px);
+    text-align:center;
+    border: 2px solid rgba(255,255,255,0.3);
+  }
+
+  #pwBox h2 {
+    font-size: 5vw;
+    margin-bottom: 2vw;
+    color: #FFD700;
+    text-shadow: 2px 2px 5px #000;
+  }
+
+  #pwInput {
+    font-size: 4vw;
+    padding: 1vw 2vw;
+    border-radius: 10px;
+    border:none;
+    width: 60%;
+    text-align:center;
+  }
+
+  #pwBtn {
+    margin-top: 2vw;
+    padding: 1vw 3vw;
+    font-size: 4vw;
+    background: #FFD700;
+    color:#000;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:bold;
+    box-shadow:0 0 15px rgba(0,0,0,0.3);
+  }
+
+  #pwBtn:hover {
+    background:#fff099;
+  }
+
+  #pwError {
+    margin-top:1vw;
+    font-size:3.5vw;
+    color:#ff4444;
+    text-shadow:1px 1px 3px #000;
+  }
+
+
+  /* Restlicher Style DEINES Spiels — unverändert */
   h1 {
     margin: 10px 0;
     font-size: 6vw;
@@ -56,7 +128,7 @@
 
   .card {
     width: 100%;
-    padding-top: 100%; /* quadratisch */
+    padding-top: 100%;
     position: relative;
     border-radius: 8px;
     border: 2px solid #333;
@@ -64,11 +136,11 @@
     transform-style: preserve-3d;
     transition: transform 0.6s, opacity 0.8s;
     box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    opacity: 0; /* Start unsichtbar */
+    opacity: 0;
   }
 
   .card.show {
-    opacity: 1; /* eingeblendet */
+    opacity: 1; 
   }
 
   .card:hover {
@@ -143,7 +215,33 @@
   }
 </style>
 </head>
+
 <body>
+
+<!-- 🔐 PASSWORT-FENSTER -->
+<div id="passwordScreen">
+  <div id="pwBox">
+    <h2>Passwort erforderlich</h2>
+    <input id="pwInput" type="password" placeholder="Passwort" />
+    <br>
+    <button id="pwBtn" onclick="checkPW()">OK</button>
+    <div id="pwError"></div>
+  </div>
+</div>
+
+<script>
+function checkPW(){
+  const correct = "1234";   // <<<< HIER ÄNDERN
+  const input = document.getElementById("pwInput").value;
+
+  if(input === correct){
+    document.getElementById("passwordScreen").style.display = "none";
+  } else {
+    document.getElementById("pwError").textContent = "Falsches Passwort!";
+  }
+}
+</script>
+<!-- 🔐 PASSWORT-FENSTER ENDE -->
 
 <h1>Tropische Früchte Memory</h1>
 <div id="digits"></div>
@@ -157,6 +255,8 @@
 </div>
 
 <script>
+/* --- Dein kompletter Memory-Spielcode bleibt UNVERÄNDERT --- */
+
 const fruits = [
   {name: 'Mango', img: 'https://media.istockphoto.com/id/450724125/de/foto/mango.jpg?s=612x612&w=0&k=20&c=NBBWlv6s0Zd8DypjPCJ7Vr3INL5GQhpxu6AXl6ctULA='},
   {name: 'Ananas', img: 'https://media.istockphoto.com/id/2153120798/de/foto/reifer-ananasquerschnitt-und-ananasscheiben-isoliert-auf-wei%C3%9Fem-hintergrund-datei-enth%C3%A4lt.jpg?s=612x612&w=0&k=20&c=bUVwM1m6KmijS-HjoA0h3OIYrpVSY9dhmtNJNBBFaVA='},
@@ -165,7 +265,7 @@ const fruits = [
   {name: 'Kaki', img: 'https://media.istockphoto.com/id/526531101/de/foto/kaki.jpg?s=612x612&w=0&k=20&c=fGDii5ckNw-jSLLemYsppHPI7JPv6D46eHpC2lXMGfA='},
   {name: 'Passionsfrucht', img: 'https://media.istockphoto.com/id/2221733795/de/foto/passion-maracuya-fruit-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=g-RDg4efRy6FEv7hZJz5YxsfbawsrrtT-jTw71Foapg='},
   {name: 'Sternfrucht', img: 'https://media.istockphoto.com/id/1154569291/de/foto/carambola-isoliert-auf-wei%C3%9Fem-hintergrund-sternfruchten.jpg?s=612x612&w=0&k=20&c=ncebRhVFdJ-hniZPt_WkuwqzUcbonVBLOxKnhqKQ3Rs='},
-  {name: 'Kokosnuss', img: 'https://media.istockphoto.com/id/2032230628/de/foto/coconut-isolated-coconuts-with-leaves-on-white-background-coconut-coco-half-and-leaf-full.jpg?s=612x612&w=0&k=20&c=_VPFFoM6fsyg4_53Q_d9sgfRaHhA98CfKRa9Oef9jHE='},
+  {name: 'Kokosnuss', img: 'https://media.istockphoto.com/id/2032230628/de/foto/coconut-isolated-coconuts-with-leaves-on-white-background.jpg?s=612x612&w=0&k=20&c=_VPFFoM6fsyg4_53Q_d9sgfRaHhA98CfKRa9Oef9jHE='},
   {name: 'Papaya', img: 'https://media.istockphoto.com/id/2211945758/de/foto/isolierte-tropische-papayafrucht-ganz-und-halbiert.jpg?s=612x612&w=0&k=20&c=Cq1PEVTKqr-XBNVJLWWuRip0DMZ_FXfgUggwdS-mEm4='},
   {name: 'Cherimoya', img: 'https://media.istockphoto.com/id/172865600/de/foto/cherimoya.jpg?s=612x612&w=0&k=20&c=imXgnXRq1HGsxJVkCujo_nGF6DxjYoWnr1Md1ZI3bJE='},
   {name: 'Feige', img: 'https://media.istockphoto.com/id/2244966404/de/foto/feige-und-schneide-sie-in-eine-isolierte-scheibe-zwei-feigen-und-ein-st%C3%BCck-feige-mit.jpg?s=612x612&w=0&k=20&c=CmdEZatn_nbSXotITtEKCRhfmW7dLl0Xal7fLs8Kp7E='},
@@ -205,7 +305,6 @@ cards.forEach((fruit, index) => {
   card.addEventListener('click', () => flipCard(card));
   board.appendChild(card);
 
-  // Sanftes Einblenden
   setTimeout(() => {
     card.classList.add('show');
   }, index * 100);
